@@ -109,4 +109,14 @@ public class FileService {
             throw e;
         }
     }
+
+    public File[] getFolderContent(String folderStr) {
+        File folder = new File(locations, folderStr);
+        return folder.listFiles();
+    }
+
+    public boolean isDirectory(String path) {
+        File f = new File(locations, path);
+        return f.exists() && f.isDirectory();
+    }
 }
