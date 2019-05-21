@@ -97,7 +97,7 @@ public class FileService {
 
             target.getParentFile().mkdirs();
 
-            File tmp = new File(target.getName() + ".download");
+            File tmp = new File(target.getPath() + ".download");
             FileUtils.copyURLToFile(new URL(url), tmp, 10000, 10000);
             FileUtils.moveFile(tmp, target);
 
