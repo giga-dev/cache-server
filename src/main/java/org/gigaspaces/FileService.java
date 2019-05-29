@@ -32,7 +32,7 @@ public class FileService {
     }
 
     public File get(String url) throws URISyntaxException, IOException {
-        String filePath = url;//extractPathFromUrl(url);
+        String filePath = extractPathFromUrl(url);
 
         log("> Requesting file " + filePath);
 

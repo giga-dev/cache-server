@@ -20,8 +20,8 @@ public class RestController {
     @Autowired
     private FileService fileService;
 
-//    @Value("${remote.base.url}")
-//    private String remoteBaseUrl;
+    @Value("${remote.base.url}")
+    private String remoteBaseUrl;
 //
 ////    @GetMapping(value = "/**", produces = "application/zip")
 //    public
@@ -64,15 +64,15 @@ public class RestController {
 
     @GetMapping(value = "/**")
     public ResponseEntity<Object> downloadFile(final HttpServletRequest request) {
-        final String requestURI = request.getRequestURL().toString();
-        if (requestURI.endsWith("/") || fileService.isDirectory(requestURI)) {
-            File[] content = fileService.getFolderContent(requestURI);
+        final String url = request.getRequestURI();
+        if (url.endsWith("/") || fileService.isDirectory(url)) {
+            File[] content = fileService.getFolderContent(url);
             if (content == null) {
                 return ResponseEntity.notFound().build();
             }
             StringBuilder b = new StringBuilder();
 
-            b.append("<h2>Index of " + requestURI+"</h2>");
+            b.append("<h2>Index of " + url+"</h2>");
             b.append("<ul>");
 
 
@@ -83,10 +83,12 @@ public class RestController {
                     name+= "/";
                 }
 
+                String sUrl = url+"/"+name;
+                sUrl = sUrl.replaceAll("//","/");
 
                 b
                         .append("<li>")
-                        .append("<a href=\""+name+"\">")
+                        .append("<a href=\""+sUrl +"\">")
                         .append(s.getName())
                         .append("</a>")
                         .append("</li>");
@@ -98,7 +100,7 @@ public class RestController {
             return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(b.toString());
         } else {
             try {
-                File file = fileService.get(requestURI);
+                File file = fileService.get(remoteBaseUrl + url);
 
                 InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
